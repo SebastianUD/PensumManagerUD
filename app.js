@@ -5,12 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const CONTAINER_ID = 'malla-curricular';
     const LOCAL_STORAGE_KEY = 'pensum_manager_states';
 
+    // Track active animations to prevent conflict
+    const activeAnimations = new WeakMap();
+
     // === DOM ELEMENTS ===
     const container = document.getElementById(CONTAINER_ID);
     const approvedEl = document.getElementById('creditos-aprobados');
     const pendingEl = document.getElementById('creditos-pendientes');
     const enCursoEl = document.getElementById('creditos-en-curso');
     const progressEl = document.getElementById('porcentaje-avance');
+    const progressBarFill = document.getElementById('progress-bar-fill');
     const averageEl = document.getElementById('promedio-semestral');
     const semestresInput = document.getElementById('matriculas-restantes');
 
@@ -23,6 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === INITIALIZATION ===
     let subjectStates = loadStates();
+    // Load persisted semestres or default to 10
+    const savedSemesters = localStorage.getItem('pensum_manager_semestres');
+    if (savedSemesters) {
+        semestresInput.value = savedSemesters;
+    }
+
     init();
 
     function init() {
@@ -38,7 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStats();
 
         // Listeners
-        semestresInput.addEventListener('input', updateStats);
+        semestresInput.addEventListener('input', () => {
+            localStorage.setItem('pensum_manager_semestres', semestresInput.value);
+            updateStats();
+        });
         modalCloseBtn.addEventListener('click', closeModal);
         window.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
@@ -133,7 +146,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const header = document.createElement('div');
         header.className = 'card-header';
-        header.innerHTML = `<span>Cod: ${subject.id || 'N/A'}</span>`;
+
+        const codeSpan = document.createElement('span');
+        codeSpan.textContent = `Cod: ${subject.id || 'N/A'}`;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.innerHTML = '<ion-icon name="copy-outline"></ion-icon>';
+        copyBtn.title = 'Copiar Código';
+        copyBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (subject.id) {
+                navigator.clipboard.writeText(subject.id).then(() => {
+                    // Optional: Visual feedback could be added here
+                    const originalIcon = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon>';
+                    setTimeout(() => copyBtn.innerHTML = originalIcon, 1000);
+                });
+            }
+        };
+
+        header.appendChild(codeSpan);
+        header.appendChild(copyBtn);
 
         const name = document.createElement('div');
         name.className = 'subject-name';
@@ -212,21 +246,40 @@ document.addEventListener('DOMContentLoaded', () => {
         animateValue(pendingEl, parseInt(pendingEl.textContent), pending, 500);
         animateValue(enCursoEl, parseInt(enCursoEl.textContent), inProgress, 500);
         progressEl.textContent = `${progress.toFixed(1)}%`;
+        progressBarFill.style.width = `${progress}%`;
+
+        // Dynamic Color: Red (low) -> Yellow -> Green (high)
+        // Simple HSL transition: 0 (Red) -> 120 (Green)
+        // We can map 0-100 progress to 0-140 hue for a nice green
+        const hue = (progress * 1.2).toFixed(0);
+        progressBarFill.style.backgroundColor = `hsl(${hue}, 80%, 50%)`;
+
         averageEl.textContent = average.toFixed(1);
     }
 
     function animateValue(obj, start, end, duration) {
+        // Cancel existing animation on this object if any
+        if (activeAnimations.has(obj)) {
+            window.cancelAnimationFrame(activeAnimations.get(obj));
+        }
+
         if (start === end) return;
+
         let startTimestamp = null;
         const step = (timestamp) => {
             if (!startTimestamp) startTimestamp = timestamp;
             const progress = Math.min((timestamp - startTimestamp) / duration, 1);
             obj.innerHTML = Math.floor(progress * (end - start) + start);
             if (progress < 1) {
-                window.requestAnimationFrame(step);
+                const id = window.requestAnimationFrame(step);
+                activeAnimations.set(obj, id);
+            } else {
+                activeAnimations.delete(obj);
             }
         };
-        window.requestAnimationFrame(step);
+
+        const id = window.requestAnimationFrame(step);
+        activeAnimations.set(obj, id);
     }
 
     // === MODAL LOGIC ===

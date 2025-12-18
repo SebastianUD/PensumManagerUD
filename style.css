@@ -57,7 +57,7 @@ body {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.4;
+    opacity: 0.25;
 }
 
 .blob-1 {
@@ -74,15 +74,6 @@ body {
     width: 600px;
     height: 600px;
     background: #06b6d4;
-}
-
-.blob-3 {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    height: 400px;
-    background: #8b5cf6;
 }
 
 /* Header */
@@ -109,7 +100,16 @@ body {
 }
 
 .brand span {
-    color: #8b5cf6;
+    color: #06b6d4;
+}
+
+.nick {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: -5px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
 }
 
 .stats-container {
@@ -128,7 +128,7 @@ body {
 }
 
 .stat-item.highlight .value {
-    color: #8b5cf6;
+    color: #06b6d4;
 }
 
 .stat-item .label {
@@ -159,6 +159,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    align-items: center;
 }
 
 .input-group label {
@@ -179,7 +180,7 @@ body {
 }
 
 .result-group {
-    text-align: right;
+    text-align: center;
 }
 
 .result-group .value-large {
@@ -198,7 +199,7 @@ body {
     padding: 2rem;
     display: flex;
     align-items: flex-start;
-    justify-content: center;
+    /*justify-content: center;*/
 }
 
 .levels-scroll-wrapper {
@@ -260,6 +261,8 @@ body {
     flex-direction: column;
     gap: 0.5rem;
     user-select: none;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .subject-card:hover {
@@ -344,6 +347,42 @@ body {
 .pdf-btn:hover {
     color: #fff;
     background: rgba(255, 255, 255, 0.1);
+}
+
+.copy-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    margin-left: 0.5rem;
+}
+
+.copy-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar-container {
+    width: 60px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-top: 0.25rem;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #10b981;
+    width: 0%;
+    transition: width 0.5s ease, background-color 0.5s ease;
 }
 
 /* Footer Legend */
