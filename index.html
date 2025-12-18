@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pensum Manager | Universidad Distrital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Ionicons for icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Header / Stats Bar -->
+    <header class="glass-header">
+        <div class="brand">
+            <h1>Pensum<span>Manager</span></h1>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="label">Vistos</span>
+                <span class="value" id="creditos-aprobados">0</span>
+                <span class="sub">Créditos</span>
+            </div>
+            <div class="stat-item">
+                <span class="label">Pendientes</span>
+                <span class="value" id="creditos-pendientes">0</span>
+                <span class="sub">Créditos</span>
+            </div>
+            <div class="stat-item">
+                <span class="label">En Curso</span>
+                <span class="value" id="creditos-en-curso">0</span>
+                <span class="sub">Créditos</span>
+            </div>
+            <div class="stat-item highlight">
+                <span class="label">Progreso</span>
+                <span class="value" id="porcentaje-avance">0%</span>
+            </div>
+        </div>
+
+        <div class="controls-container">
+            <div class="input-group">
+                <label for="matriculas-restantes">Matrículas Restantes</label>
+                <input type="number" id="matriculas-restantes" min="1" max="15" value="10">
+            </div>
+            <div class="result-group">
+                <span class="label">Mínimo Semestral</span>
+                <span class="value-large" id="promedio-semestral">0</span>
+                <span class="sub">Créditos/Semestre</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Grid Container -->
+    <main class="main-container">
+        <div class="levels-scroll-wrapper" id="malla-curricular">
+            <!-- Level columns will be injected here by JS -->
+        </div>
+    </main>
+
+    <!-- Legend -->
+    <footer class="glass-footer">
+        <div class="legend-item">
+            <div class="dot aprobada"></div>
+            <span>Aprobada</span>
+        </div>
+        <div class="legend-item">
+            <div class="dot en-curso"></div>
+            <span>En Curso</span>
+        </div>
+        <div class="legend-item">
+            <div class="dot no-cursada"></div>
+            <span>No Cursada</span>
+        </div>
+    </footer>
+
+    <!-- PDF Modal -->
+    <div id="pdf-modal" class="modal">
+        <div class="modal-content glass-modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Syllabus</h2>
+                <button class="close-btn" id="close-modal"><ion-icon name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="pdf-frame" src="" frameborder="0"></iframe>
+                <div id="no-pdf-message" class="hidden">
+                    <ion-icon name="document-text-outline"></ion-icon>
+                    <p>No hay Syllabus disponible para esta materia.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
