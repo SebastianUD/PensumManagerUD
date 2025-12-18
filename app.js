@@ -154,14 +154,20 @@ document.addEventListener('DOMContentLoaded', () => {
         copyBtn.className = 'copy-btn';
         copyBtn.innerHTML = '<ion-icon name="copy-outline"></ion-icon>';
         copyBtn.title = 'Copiar Código';
+
+        let copyTimeoutId;
+
         copyBtn.onclick = (e) => {
             e.stopPropagation();
             if (subject.id) {
                 navigator.clipboard.writeText(subject.id).then(() => {
-                    // Optional: Visual feedback could be added here
-                    const originalIcon = copyBtn.innerHTML;
+                    if (copyTimeoutId) clearTimeout(copyTimeoutId);
+
                     copyBtn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon>';
-                    setTimeout(() => copyBtn.innerHTML = originalIcon, 1000);
+
+                    copyTimeoutId = setTimeout(() => {
+                        copyBtn.innerHTML = '<ion-icon name="copy-outline"></ion-icon>';
+                    }, 1000);
                 });
             }
         };
